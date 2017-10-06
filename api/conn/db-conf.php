@@ -30,8 +30,6 @@ class Model {
 		if (!$this->conn) {
 			echo json_encode(array('code'=>500, 'message'=>'DB connection failed.'));
 			die();
-		} else {
-			echo json_encode(array('message'=>'DB Connect.'));
 		}
 	}
 
