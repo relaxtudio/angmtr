@@ -7,8 +7,17 @@ class Login {
 		$model->close();
 	}
 
-	function checkToken() {
-		echo "test";
+	function checkToken($data) {
+		$model = new Model;
+		$model->connect();
+		$sql = "SELECT * FROM token WHERE token = '" . $data . "'";
+		$result = mysqli_query($model->conn, $sql);
+		if (mysqli_num_rows($result) > 0) {
+			echo true;
+		} else {
+			echo false;
+		}
+		$model->close();
 	}
 
 	function createUser($data) {
@@ -36,16 +45,25 @@ class Login {
 	function loginUser($data) {
 		$model = new Model;
 		$model->connect();
-		$get = "SELECT usr_nm, usr_pass, usr_salt FROM usr_lgn WHERE usr_nm = '" . $data['username'] . "'";
+		$get = "SELECT usr_id, usr_nm, usr_pass, usr_salt FROM usr_lgn WHERE usr_nm = '" . $data['username'] . "'";
 		$result = mysqli_fetch_array(mysqli_query($model->conn, $get));
 		$salt = $result['usr_salt'];
+		$usrid = $result['usr_id'];
+		$usrname = $result['usr_nm'];
     	$check = hash('sha256', $data['password'] . $salt);
     	for ($i = 0; $i < 65536; $i++) { 
     		$check = hash('sha256', $check . $salt);
     	}
     	$status = false;
     	if ($check == $result['usr_pass']) {
-    		$status = true;
+    		$user = new stdClass();
+    		$token = dechex(mt_rand(0, 2147483647)) . dechex(mt_rand(0, 2147483647));
+    		$token = hash('sha256', $token);
+    		$sql = "INSERT INTO token (token,usr_id) VALUES ('" . $token . "'," . $usrid . ")";
+    		mysqli_query($model->conn, $sql);
+    		$user->name = $usrname;
+    		$user->token = $token;
+    		$status = $user;
     	}
 
 		echo json_encode($status);
