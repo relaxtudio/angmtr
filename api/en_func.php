@@ -14,10 +14,9 @@ function testData() {
 	$login->testData();
 }
 
-function checkToken() {
-	$data = getData();
+function checkToken($data) {
 	$login = new Login;
-	$login->checkToken($data);
+	return $login->checkToken($data);
 }
 
 function createUser() {
@@ -50,6 +49,12 @@ function getMap() {
 	$data = getData();
 	$map = new Map;
 	$map->getMap();
+}
+
+function editMap() {
+	$data = getData();
+	$map = new Map;
+	$map->editMap($data);
 }
 
 // Car

@@ -12,12 +12,12 @@ class Login {
 		$model->connect();
 		$sql = "SELECT * FROM token WHERE token = '" . $data . "'";
 		$result = mysqli_query($model->conn, $sql);
+		$status = false;
 		if (mysqli_num_rows($result) > 0) {
-			echo true;
-		} else {
-			echo false;
+			$status = true;
 		}
 		$model->close();
+		return $status;
 	}
 
 	function createUser($data) {

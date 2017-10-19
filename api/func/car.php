@@ -16,6 +16,18 @@ class Car
 		$result = mysqli_fetch_all($q, MYSQLI_ASSOC);
 		echo json_encode($result);
 		$model->close();
-	}	
+	}
+
+	function addCar($data) {
+
+	}
+
+	function delCar($data) {
+
+	}
+
+	function editCar($data) {
+		
+	}
 }
 ?>

@@ -20,7 +20,18 @@ class Map
 	}
 
 	function delMap() {
-		
+
+	}
+
+	function editMap($data) {
+		$model = new Model;
+		$model->connect();
+
+		$check = checkToken($data['token']);
+		if ($check) {
+			echo "go";
+		}
+		$model->close();
 	}
 }
 ?>
