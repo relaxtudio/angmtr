@@ -20,14 +20,32 @@ class Car
 
 	function addCar($data) {
 
+		$status = new stdClass();
+		$status->data = false;
+		$status->token = false;
+
+		$check = checkToken($data['token']);
+
 	}
 
 	function delCar($data) {
 
+		$status = new stdClass();
+		$status->data = false;
+		$status->token = false;
+
+		$check = checkToken($data['token']);
+
 	}
 
 	function editCar($data) {
-		
+
+		$status = new stdClass();
+		$status->data = false;
+		$status->token = false;
+
+		$check = checkToken($data['token']);
+
 	}
 }
 ?>

@@ -17,21 +17,53 @@ class Map
 
 	function addMap() {
 
+		$status = new stdClass();
+		$status->data = false;
+		$status->token = false;
+
+		$check = checkToken($data['token']);
 	}
 
 	function delMap() {
 
+		$status = new stdClass();
+		$status->data = false;
+		$status->token = false;
+
+		$check = checkToken($data['token']);
 	}
 
 	function editMap($data) {
-		$model = new Model;
-		$model->connect();
+
+		$status = new stdClass();
+		$status->data = false;
+		$status->token = false;
 
 		$check = checkToken($data['token']);
+
+		$model = new Model;
+		$model->connect();
+		$sql = "";
+		
+		if (isset($data->id)) {
+			$sql = "UPDATE showroom SET sr_nm = '" . $data['name'] . "', 
+									sr_alamat = '" . $data['address'] . "', 
+									sr_telp = '" . $data['phone'] . "', 
+									sr_kota = '" . $data['city'] . "', 
+									lat = '" . $data['lat'] . "', 
+									lng = '" . $data['lng'] . "' 
+									WHERE sr_id = " . $data['id'];	
+		}
+
 		if ($check) {
-			echo "go";
+			$status->token = true;
+			if (isset($data->id)) {
+				mysqli_query($model->conn, $sql);
+				$status->data = true;
+			}
 		}
 		$model->close();
+		echo json_encode($status);
 	}
 }
 ?>
