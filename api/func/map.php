@@ -15,7 +15,7 @@ class Map
 		echo json_encode($result);
 	}
 
-	function addMap() {
+	function addMap($data) {
 
 		$status = new stdClass();
 		$status->data = false;
@@ -24,7 +24,7 @@ class Map
 		$check = checkToken($data['token']);
 	}
 
-	function delMap() {
+	function delMap($data) {
 
 		$status = new stdClass();
 		$status->data = false;

@@ -51,6 +51,18 @@ function getMap() {
 	$map->getMap();
 }
 
+function addMap() {
+	$data = getData();
+	$map = new Map;
+	$map->addMap($data);
+}
+
+function delMap() {
+	$data = getData();
+	$map = new Map;
+	$map->delMap($data);
+}
+
 function editMap() {
 	$data = getData();
 	$map = new Map;
