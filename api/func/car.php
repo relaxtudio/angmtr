@@ -4,14 +4,17 @@
 */
 class Car
 {
+
+	public static $table = "cars_prod";
+
 	function getCar($data) {
 		$model = new Model;
 		$model->connect();
 		$filter = "";
-		if ($data['id']) {
+		if (isset($data['id'])) {
 			$filter += "WHERE c_id = " . $data['id'] . "";
 		}
-		$sql = "SELECT * FROM cars_prod" . $filter;
+		$sql = "SELECT * FROM " . self::$table . $filter;
 		$q = mysqli_query($model->conn, $sql);
 		$result = mysqli_fetch_all($q, MYSQLI_ASSOC);
 		echo json_encode($result);
@@ -26,6 +29,8 @@ class Car
 
 		$check = checkToken($data['token']);
 
+		$sql = "INSERT INTO " . self::$table . " VALUES ";
+
 	}
 
 	function delCar($data) {
@@ -35,6 +40,8 @@ class Car
 		$status->token = false;
 
 		$check = checkToken($data['token']);
+
+		$sql = "DELETE FROM " . self::$table . " VALUES ";
 
 	}
 

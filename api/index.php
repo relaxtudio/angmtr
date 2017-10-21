@@ -1,4 +1,6 @@
 <?php  
+// error_reporting(0);
+
 require_once('conn/db-conf.php');
 require_once('en_route.php');
 require_once('en_func.php');

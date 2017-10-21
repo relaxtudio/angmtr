@@ -4,11 +4,14 @@
 */
 class Map 
 {
+
+	public static $table = "showroom";
+
 	function getMap() {
 		$model = new Model;
 		$model->connect();
 		$sql = "SELECT sr_id, sr_nm, sr_alamat, sr_telp, sr_kota, lat, lng
-				FROM showroom";
+				FROM " . self::$table;
 		$q = mysqli_query($model->conn, $sql);
 		$result = mysqli_fetch_all($q,MYSQLI_ASSOC);
 		$model->close();
@@ -46,7 +49,7 @@ class Map
 		$sql = "";
 		
 		if (isset($data->id)) {
-			$sql = "UPDATE showroom SET sr_nm = '" . $data['name'] . "', 
+			$sql = "UPDATE " . self::$table . " SET sr_nm = '" . $data['name'] . "', 
 									sr_alamat = '" . $data['address'] . "', 
 									sr_telp = '" . $data['phone'] . "', 
 									sr_kota = '" . $data['city'] . "', 
