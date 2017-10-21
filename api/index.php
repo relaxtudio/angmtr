@@ -4,6 +4,7 @@
 require_once('conn/db-conf.php');
 require_once('en_route.php');
 require_once('en_func.php');
+require_once('lib/smart_resize_image.function.php');
 
 $url = explode('api/', $_SERVER['REQUEST_URI']);
 $param = explode('/', $url[1]);

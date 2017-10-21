@@ -76,3 +76,27 @@ function getCar() {
 	$car = new Car;
 	$car->getCar($data);
 }
+
+function addCar() {
+	$data = getData();
+	$car = new Car;
+	$car->addCar($data);
+}
+
+function delCar() {
+	$data = getData();
+	$car = new Car;
+	$car->delCar($data);
+}
+
+function editCar() {
+	$data = getData();
+	$car = new Car;
+	$car->editCar($data);
+}
+
+function dirCar() {
+	$data = getData();
+	$car = new Car;
+	$car->dirCar($data);
+}

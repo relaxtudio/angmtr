@@ -34,6 +34,12 @@ class Map
 		$status->token = false;
 
 		$check = checkToken($data['token']);
+
+		$model = new Model;
+		$model->connect();
+		$sql = "";
+
+		$model->close();
 	}
 
 	function editMap($data) {
@@ -65,6 +71,7 @@ class Map
 				$status->data = true;
 			}
 		}
+
 		$model->close();
 		echo json_encode($status);
 	}
