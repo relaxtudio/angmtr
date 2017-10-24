@@ -77,6 +77,12 @@ function getCar() {
 	$car->getCar($data);
 }
 
+function getCarDetail() {
+	$data = getData();
+	$car = new Car;
+	$car->getCarDetail($data);
+}
+
 function addCar() {
 	$data = getData();
 	$car = new Car;
@@ -100,3 +106,5 @@ function dirCar() {
 	$car = new Car;
 	$car->dirCar($data);
 }
+
+// Sim
