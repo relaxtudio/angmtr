@@ -72,12 +72,28 @@ class Car
 
 		$check = checkToken($data['token']);
 
-		$sql = "INSERT INTO " . self::$table1 . " VALUES ";
+		if ($check) {
+			$status->token = true;
+		} else {
+			return echo $status;
+		}
+
+		$sql = "INSERT INTO " . self::$table1 . " (brand_id_fk, cars_model_id, name, add_by) VALUES (
+				" . $data['data']['brand_id'] . ", 
+				" . $data['data']['cars_model_id'] . ", 
+				" . $data['data']['name'] . ", 
+				" . $data['data']['add_by'] . " ) ";
+
 		$q = mysqli_query($model->conn, $sql);
 
 		if ($q) {
 			$id = mysqli_insert_id($model->conn);
+			$status->data = $id;
 		}
+
+		echo json_encode($status);
+
+		$model->close();
 
 	}
 
@@ -88,12 +104,38 @@ class Car
 
 		$check = checkToken($data['token']);
 
-		$sql = "INSERT INTO " . self::$table3 . " VALUES ";
+		if ($check) {
+			$status->token = true;
+		} else {
+			return echo $status;
+		}
+
+		$sql = "INSERT INTO " . self::$table3 . " (cars_prod_id, harga, tahun, nopol,
+													bbm, km, trans_id, silinder, warna,
+													showroom_id, cars_stats_id, dir_img, add_by) VALUES (
+				" . $data['data']['id'] . ",
+				" . $data['data']['harga'] . ",
+				" . $data['data']['tahun'] . ",
+				" . $data['data']['nopol'] . ",
+				" . $data['data']['bbm'] . ",
+				" . $data['data']['km'] . ",
+				" . $data['data']['trans_id'] . ",
+				" . $data['data']['silinder'] . ",
+				" . $data['data']['warna'] . ",
+				" . $data['data']['showroom_id'] . ",
+				" . $data['data']['cars_stats_id'] . ",
+				" . $data['data']['dir_img'] . ",
+				" . $data['data']['add_by'] . " )";
+
 		$q = mysqli_query($model->conn, $sql);
 
 		if ($q) {
 			$id = mysqli_insert_id($model->conn);
+			$status->data = $id;
 		}
+
+		$model->close();
+		echo json_encode($status);
 	}
 
 	function delCar($data) {
