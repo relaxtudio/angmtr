@@ -101,6 +101,12 @@ function editCar() {
 	$car->editCar($data);
 }
 
+function editCarDetail() {
+	$data = getData();
+	$car = new Car;
+	$car->editCarDetail($data);
+}
+
 function dirCar() {
 	$data = getData();
 	$car = new Car;
@@ -108,3 +114,9 @@ function dirCar() {
 }
 
 // Sim
+
+function calcSim() {
+	$data = getData();
+	$sim = new Sim;
+	$sim->calcSim($data);
+}

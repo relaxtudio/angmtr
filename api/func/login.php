@@ -76,4 +76,11 @@ class Login {
 		
 		$model->close();
 	}
+
+	function changePass($data) {
+		$model = new Model;
+		$model->connect();
+
+		$model->close();
+	}
 }
