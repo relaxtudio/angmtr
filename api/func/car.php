@@ -75,7 +75,7 @@ class Car
 		if ($check) {
 			$status->token = true;
 		} else {
-			return echo $status;
+			return $status;
 		}
 
 		$sql = "INSERT INTO " . self::$table1 . " (brand_id_fk, cars_model_id, name, add_by) VALUES (
@@ -107,7 +107,7 @@ class Car
 		if ($check) {
 			$status->token = true;
 		} else {
-			return echo $status;
+			return $status;
 		}
 
 		$sql = "INSERT INTO " . self::$table3 . " (cars_prod_id, harga, tahun, nopol,
@@ -149,7 +149,7 @@ class Car
 		if ($check) {
 			$status->token = true;
 		} else {
-			return echo $status;
+			return $status;
 		}
 
 		$sql = "DELETE FROM " . self::$table1 . " WHERE c_id = " . $data['data']['id'];

@@ -4,6 +4,7 @@ require_once('func/login.php');
 require_once('func/crud.php');
 require_once('func/map.php');
 require_once('func/car.php');
+require_once('func/sim.php');
 
 function test() {
 	echo getData();
@@ -118,5 +119,5 @@ function dirCar() {
 function calcSim() {
 	$data = getData();
 	$sim = new Sim;
-	$sim->calcSim($data);
+	echo json_encode($sim->calcSim($data));
 }
