@@ -1,4 +1,5 @@
 <?php  
+defined('SAFELOAD') or define('SAFELOAD',true);
 // error_reporting(0);
 
 require_once('conn/db-conf.php');

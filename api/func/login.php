@@ -45,7 +45,8 @@ class Login {
 	function loginUser($data) {
 		$model = new Model;
 		$model->connect();
-		$get = "SELECT usr_id, usr_nm, usr_pass, usr_salt FROM usr_lgn WHERE usr_nm = '" . $data['username'] . "'";
+		$get = "SELECT usr_id, usr_nm, usr_pass, usr_salt 
+				FROM usr_lgn WHERE usr_nm = '" . $data['username'] . "'";
 		$result = mysqli_fetch_array(mysqli_query($model->conn, $get));
 		$salt = $result['usr_salt'];
 		$usrid = $result['usr_id'];
@@ -59,8 +60,10 @@ class Login {
     		$user = new stdClass();
     		$token = dechex(mt_rand(0, 2147483647)) . dechex(mt_rand(0, 2147483647));
     		$token = hash('sha256', $token);
-    		$sql = "INSERT INTO token (token,usr_id) VALUES ('" . $token . "'," . $usrid . ")";
+    		$sql = "INSERT INTO token (token,usr_id) 
+    				VALUES ('" . $token . "'," . $usrid . ")";
     		mysqli_query($model->conn, $sql);
+    		$user->id = $usrid;
     		$user->name = $usrname;
     		$user->token = $token;
     		$status = $user;

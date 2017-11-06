@@ -1,4 +1,10 @@
 <?php
+if (!defined('SAFELOAD'))
+    exit('ACCESS FORBIDDEN!');
+
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept');
+header('Content-type: application/json');
 
 require_once('func/login.php');
 require_once('func/crud.php');
@@ -83,6 +89,12 @@ function getCarDetail() {
 	$data = getData();
 	$car = new Car;
 	$car->getCarDetail($data);
+}
+
+function getCarSum() {
+	$data = getData();
+	$car = new Car;
+	$car->getCarSum($data);
 }
 
 function addCar() {
