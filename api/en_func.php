@@ -79,6 +79,12 @@ function editMap() {
 
 // Car
 
+function getBrand() {
+	$data = getData();
+	$car = new Car;
+	$car->getBrand($data);
+}
+
 function getCar() {
 	$data = getData();
 	$car = new Car;

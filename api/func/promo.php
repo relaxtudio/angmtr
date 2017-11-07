@@ -22,14 +22,16 @@ class Promo {
 			if (isset($data['filter']['id'])) {
 				array_push($filterArray, "promo_id = " . $data['filter']['id']);
 			}
-			$filter += implode(" AND ",$filterArray);
+			$filter = $filter . implode(" AND ",$filterArray);
 		}
 
-		$sql = "SELECT * FROM " . self::$table1 . $filter;
+		$sql = "SELECT promo_id as id, promo_name as name, promo_dir as img FROM " . self::$table1 . $filter;
 		$q = mysqli_query($model->conn, $sql);
 		$result = mysqli_fetch_all($q, MYSQLI_ASSOC);
 
 		$model->close();
+
+		return $result;
 	}
 }
 

@@ -18,7 +18,7 @@ class Car
 		$model = new Model;
 		$model->connect();
 
-		$sql = "SELECT * FROM cars_brand";
+		$sql = "SELECT brand_id as id, brand_nm as name FROM " . self::$table2;
 		$q = mysqli_query($model->conn, $sql);
 		$result = mysqli_fetch_all($q, MYSQLI_ASSOC);
 		echo json_encode($result);
@@ -33,9 +33,8 @@ class Car
 		$limit = "";
 		$offset = "";
 		if (isset($data['filter'])) {
-
 			if (isset($data['filter']['id'])) {
-				$filter += "WHERE c_id = " . $data['filter']['id'];
+				$filter = $filter . " WHERE c_id = " . $data['filter']['id'];
 			}
 			if (isset($data['filter']['page']) && isset($data['filter']['limit'])) {
 				$limit = " LIMIT " . $data['filter']['limit'];
