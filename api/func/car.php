@@ -36,6 +36,9 @@ class Car
 			if (isset($data['filter']['id'])) {
 				$filter = $filter . " WHERE c_id = " . $data['filter']['id'];
 			}
+			if (isset($data['filter']['brand'])) {
+				$filter = $filter . " WHERE cars_brand.brand_id = " . $data['filter']['brand'];
+			}
 			if (isset($data['filter']['page']) && isset($data['filter']['limit'])) {
 				$limit = " LIMIT " . $data['filter']['limit'];
 				$offset = " OFFSET " . $data['filter']['limit'] * ($data['filter']['page'] - 1);
@@ -54,14 +57,17 @@ class Car
 						cars_detail.warna as warna,
 						cars_detail.tahun as tahun,
 						usr_lgn.usr_nm as addby,
+						cars_detail.km as km,
+						showroom.sr_nm as showroom,
 						cars_detail.dir_img
 				FROM " . self::$table1 . " 
-				LEFT JOIN " . self::$table3 . " ON " . self::$table3 . ".cars_prod_id = " . self::$table1 . ".c_id 
-				LEFT JOIN " . self::$table2 . " ON " . self::$table2 . ".brand_id = " . self::$table1 . ".brand_id_fk 
-				LEFT JOIN " . self::$table4 . " ON " . self::$table4 . ".stats_id = " . self::$table3 . ".cars_stats_id 
-				LEFT JOIN " . self::$table5 . " ON " . self::$table5 . ".trans_id = " . self::$table3 . ".trans_id 
-				LEFT JOIN " . self::$table7 . " ON " . self::$table7 . ".cars_model_id = " . self::$table1 . ".cars_model_id 
-				LEFT JOIN " . self::$sptable . " ON " . self::$sptable . ".usr_id = " . self::$table3 . ".add_by 
+				JOIN " . self::$table3 . " ON " . self::$table3 . ".cars_prod_id = " . self::$table1 . ".c_id 
+				JOIN " . self::$table2 . " ON " . self::$table2 . ".brand_id = " . self::$table1 . ".brand_id_fk 
+				JOIN " . self::$table4 . " ON " . self::$table4 . ".stats_id = " . self::$table3 . ".cars_stats_id 
+				JOIN " . self::$table5 . " ON " . self::$table5 . ".trans_id = " . self::$table3 . ".trans_id 
+				JOIN " . self::$table7 . " ON " . self::$table7 . ".cars_model_id = " . self::$table1 . ".cars_model_id 
+				JOIN " . self::$table6 . " ON " . self::$table6 . ".sr_id = " . self::$table3 . ".showroom_id 
+				JOIN " . self::$sptable . " ON " . self::$sptable . ".usr_id = " . self::$table3 . ".add_by 
 				" . $filter . "
 				ORDER BY cars_prod.c_id " . $limit . $offset;
 		$q = mysqli_query($model->conn, $sql);
@@ -77,12 +83,15 @@ class Car
 		$filter = "";
 
 		if (isset($data['filter'])) {
-			
+			if (isset($data['filter']['id'])) {
+				$filter = $filter . " WHERE cars_detail.cars_prod_id = " . $data['filter']['id'];
+			}			
 		}
 
 		$sql = "SELECT * FROM " . self::$table3 . "
 				LEFT JOIN " . self::$table4 . " ON " . self::$table4 . ".stats_id = " . self::$table3 . ".cars_stats_id 
-				LEFT JOIN " . self::$table5 . " ON " . self::$table5 . ".trans_id = " . self::$table3 . ".trans_id " . $filter;
+				LEFT JOIN " . self::$table5 . " ON " . self::$table5 . ".trans_id = " . self::$table3 . ".trans_id 
+				LEFT JOIN " . self::$table6 . " ON " . self::$table6 . ".sr_id = " . self::$table3 . ".showroom_id" . $filter;
 		$q = mysqli_query($model->conn, $sql);
 		$result = mysqli_fetch_all($q, MYSQLI_ASSOC);
 		echo json_encode($result);
