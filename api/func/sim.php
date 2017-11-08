@@ -46,7 +46,7 @@
 			$return['prepayment']->aspolis = ($data['c_harga'] * $percAs[0]) / 100;
 			$return['prepayment']->crdtpro = ($sisaas * $preArray[3]) / 100;
 
-			return json_encode($return);
+			return $return;
 		}
 
 		function calcAsuransi($data) {
