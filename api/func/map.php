@@ -10,7 +10,7 @@ class Map
 	function getMap() {
 		$model = new Model;
 		$model->connect();
-		$sql = "SELECT sr_id, sr_nm, sr_alamat, sr_telp, sr_kota, lat, lng
+		$sql = "SELECT sr_id as id, sr_nm as lks, sr_alamat as descr, sr_telp as tlp, sr_kota as kota, lat, lng
 				FROM " . self::$table;
 		$q = mysqli_query($model->conn, $sql);
 		$result = mysqli_fetch_all($q,MYSQLI_ASSOC);
