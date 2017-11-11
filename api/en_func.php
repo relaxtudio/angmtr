@@ -133,6 +133,12 @@ function dirCar() {
 	$car->dirCar($data);
 }
 
+function testUpload() {
+	$data = getData();
+	$car = new Car;
+	$car->testUpload($data);
+}
+
 // Promo
 
 function getPromo() {

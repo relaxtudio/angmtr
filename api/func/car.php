@@ -310,5 +310,21 @@ class Car
 		echo json_encode($status);
 
 	}
+
+	function testUpload($data) {
+		$mime_type = '';
+		if (isset($data['image'])) {
+			$file = $data['image'];
+			list($type, $file) = explode(';', $file);
+			list(, $file)      = explode(',', $file);
+			$fileImage = base64_decode($file);
+			$mime_type = finfo_buffer(finfo_open(), $fileImage, FILEINFO_MIME_TYPE);
+			
+			$extension = str_replace("image/", "", $mime_type);
+			file_put_contents('../assets/image.' . $extension, $fileImage);
+		}
+
+		echo json_encode($mime_type);
+	}
 }
 ?>
