@@ -85,6 +85,18 @@ function getBrand() {
 	$car->getBrand($data);
 }
 
+function getModel() {
+	$data = getData();
+	$car = new Car;
+	$car->getModel($data);
+}
+
+function getShowroom() {
+	$data = getData();
+	$car = new Car;
+	$car->getShowroom($data);
+}
+
 function getCar() {
 	$data = getData();
 	$car = new Car;
@@ -106,7 +118,13 @@ function getCarSum() {
 function addCar() {
 	$data = getData();
 	$car = new Car;
-	$car->addCar($data);
+	echo json_encode($car->addCar($data));
+}
+
+function addCarDetail() {
+	$data = getData();
+	$car = new Car;
+	echo json_encode($car->addCarDetail($data));
 }
 
 function delCar() {
@@ -131,6 +149,12 @@ function dirCar() {
 	$data = getData();
 	$car = new Car;
 	$car->dirCar($data);
+}
+
+function uploadCar() {
+	$data = getData();
+	$car = new Car;
+	$car->uploadCar($data);
 }
 
 function testUpload() {

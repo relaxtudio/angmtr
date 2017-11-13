@@ -26,6 +26,30 @@ class Car
 		$model->close();
 	}
 
+	function getModel($data) {
+		$model = new Model;
+		$model->connect();
+
+		$sql = "SELECT cars_model_id as id, value as name FROM " . self::$table7;
+		$q = mysqli_query($model->conn, $sql);
+		$result = mysqli_fetch_all($q, MYSQLI_ASSOC);
+		echo json_encode($result);
+
+		$model->close();
+	}
+
+	function getShowroom($data) {
+		$model = new Model;
+		$model->connect();
+
+		$sql = "SELECT sr_id as id, sr_nm as name FROM " . self::$table6;
+		$q = mysqli_query($model->conn, $sql);
+		$result = mysqli_fetch_all($q, MYSQLI_ASSOC);
+		echo json_encode($result);
+
+		$model->close();
+	}
+
 	function getCar($data) {
 		$model = new Model;
 		$model->connect();
@@ -123,6 +147,9 @@ class Car
 
 	function addCar($data) {
 
+		$model = new Model;
+		$model->connect();
+
 		$status = new stdClass();
 		$status->data = false;
 		$status->token = false;
@@ -136,10 +163,10 @@ class Car
 		}
 
 		$sql = "INSERT INTO " . self::$table1 . " (brand_id_fk, cars_model_id, name, add_by) VALUES (
-				" . $data['data']['brand_id'] . ", 
-				" . $data['data']['cars_model_id'] . ", 
-				" . $data['data']['name'] . ", 
-				" . $data['data']['add_by'] . " ) ";
+				" . intval($data['data']['brand_id']) . ", 
+				" . intval($data['data']['cars_model_id']) . ", 
+				'" . $data['data']['name'] . "', 
+				" . intval($data['data']['add_by']) . " ) ";
 
 		$q = mysqli_query($model->conn, $sql);
 
@@ -148,13 +175,15 @@ class Car
 			$status->data = $id;
 		}
 
-		echo json_encode($status);
-
 		$model->close();
 
+		return $status;
 	}
 
 	function addCarDetail($data) {
+		$model = new Model;
+		$model->connect();
+
 		$status = new stdClass();
 		$status->data = false;
 		$status->token = false;
@@ -170,19 +199,19 @@ class Car
 		$sql = "INSERT INTO " . self::$table3 . " (cars_prod_id, harga, tahun, nopol,
 													bbm, km, trans_id, silinder, warna,
 													showroom_id, cars_stats_id, dir_img, add_by) VALUES (
-				" . $data['data']['id'] . ",
-				" . $data['data']['harga'] . ",
-				" . $data['data']['tahun'] . ",
-				" . $data['data']['nopol'] . ",
-				" . $data['data']['bbm'] . ",
-				" . $data['data']['km'] . ",
-				" . $data['data']['trans_id'] . ",
-				" . $data['data']['silinder'] . ",
-				" . $data['data']['warna'] . ",
-				" . $data['data']['showroom_id'] . ",
-				" . $data['data']['cars_stats_id'] . ",
-				" . $data['data']['dir_img'] . ",
-				" . $data['data']['add_by'] . " )";
+				" . intval($data['data']['id']) . ",
+				" . intval($data['data']['harga']) . ",
+				" . intval($data['data']['tahun']) . ",
+				'" . $data['data']['nopol'] . "',
+				'" . $data['data']['bbm'] . "',
+				" . intval($data['data']['km']) . ",
+				" . intval($data['data']['trans_id']) . ",
+				" . intval($data['data']['silinder']) . ",
+				'" . $data['data']['warna'] . "',
+				" . intval($data['data']['showroom_id']) . ",
+				" . intval($data['data']['cars_stats_id']) . ",
+				'" . $data['data']['dir_img'] . "',
+				" . intval($data['data']['add_by']) . " )";
 
 		$q = mysqli_query($model->conn, $sql);
 
@@ -192,7 +221,8 @@ class Car
 		}
 
 		$model->close();
-		echo json_encode($status);
+
+		return $status;
 	}
 
 	function delCar($data) {
@@ -285,9 +315,11 @@ class Car
 
 		if ($check) {
 			$status->token = true;
-			if (file_exists("../img/" . $data->dir) == false) {
+			if (file_exists("../../ng-amproj/assets/cars/" . $data['data']) == false) {
 				$status->data = true;
-				mkdir("../img/" . $data->dir, 0755);
+				mkdir("../../ng-amproj/assets/cars/" . $data['data'], 0755);
+				mkdir("../../ng-amproj/assets/cars/" . $data['data'] . "/ext", 0755);
+				mkdir("../../ng-amproj/assets/cars/" . $data['data'] . "/int", 0755);
 			}
 		}
 
@@ -301,10 +333,41 @@ class Car
 		$status->token = false;
 
 		$check = checkToken($data['token']);
+		$type = $data['type'];
+		$dir = '../../ng-amproj/assets/cars/' . $data['dir'] . '/';
+
+		if ($data['type'] == 'exterior') {
+			$dir = $dir . 'ext/';
+		}
+
+		if ($data['type'] == 'interior') {
+			$dir = $dir . 'int/';
+		}
 
 		if ($check) {
 			$status->token = true;
-			pathinfo($data->dir . $data->$file,PATHINFO_EXTENSION);
+			// pathinfo($data->dir . $data->$file,PATHINFO_EXTENSION);
+			if (isset($data['image'])) {
+				$mime_type = '';
+				foreach ($data['image'] as $key => $value) {
+					$file = $value['file'];
+					$name = $value['name'];
+
+					list($type, $file) = explode(';', $file);
+					list(, $file)      = explode(',', $file);
+					$fileImage = base64_decode($file);
+					$mime_type = finfo_buffer(finfo_open(), $fileImage, FILEINFO_MIME_TYPE);
+					$extension = str_replace("image/", "", $mime_type);
+					
+					if ($data['type'] == 'preview') {
+						$name = 'preview.jpg';
+					}
+
+					$extension = str_replace("image/", "", $mime_type);
+					file_put_contents($dir . $name, $fileImage);
+				}
+				$status->data = true;
+			}
 		}
 
 		echo json_encode($status);
