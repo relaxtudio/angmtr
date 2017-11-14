@@ -13,6 +13,7 @@ class Car
 	public static $table6 = "showroom";
 	public static $table7 = "cars_model";
 	public static $sptable = "usr_lgn";
+	public static $directory = "../../ng-amproj/";
 
 	function getBrand($data) {
 		$model = new Model;
@@ -77,6 +78,7 @@ class Car
 						cars_brand.brand_id as brand_id,
 						cars_brand.brand_nm as brand,
 						cars_transmission.trans_nm as trans,
+						cars_model.cars_model_id as cars_model_id,
 						cars_model.value as model,
 						cars_detail.warna as warna,
 						cars_detail.tahun as tahun,
@@ -227,6 +229,9 @@ class Car
 
 	function delCar($data) {
 
+		$model = new Model;
+		$model->connect();
+
 		$status = new stdClass();
 		$status->data = false;
 		$status->token = false;
@@ -239,15 +244,19 @@ class Car
 			return $status;
 		}
 
-		$sql = "DELETE FROM " . self::$table1 . " WHERE c_id = " . $data['data']['id'];
-
+		$sql = "DELETE FROM " . self::$table3 . " WHERE cars_prod_id = " . $data['data']['id'];
 		$q = mysqli_query($model->conn, $sql);
-
 		if ($q) {
-			$status->data = true;
+			$sql2 = "DELETE FROM " . self::$table1 . " WHERE c_id = " . $data['data']['id'];
+			$q2 = mysqli_query($model->conn, $sql);
+			if ($q2) {
+				$status->data = true;
+			}
 		}
 
-		echo json_encode($status);
+		$model->close();
+
+		return $status;
 
 	}
 
@@ -315,11 +324,11 @@ class Car
 
 		if ($check) {
 			$status->token = true;
-			if (file_exists("../../ng-amproj/assets/cars/" . $data['data']) == false) {
+			if (file_exists(self::$directory . "assets/cars/" . $data['data']) == false) {
 				$status->data = true;
-				mkdir("../../ng-amproj/assets/cars/" . $data['data'], 0755);
-				mkdir("../../ng-amproj/assets/cars/" . $data['data'] . "/ext", 0755);
-				mkdir("../../ng-amproj/assets/cars/" . $data['data'] . "/int", 0755);
+				mkdir(self::$directory . "assets/cars/" . $data['data'], 0755);
+				mkdir(self::$directory . "assets/cars/" . $data['data'] . "/ext", 0755);
+				mkdir(self::$directory . "assets/cars/" . $data['data'] . "/int", 0755);
 			}
 		}
 
@@ -334,7 +343,12 @@ class Car
 
 		$check = checkToken($data['token']);
 		$type = $data['type'];
-		$dir = '../../ng-amproj/assets/cars/' . $data['dir'] . '/';
+		$dir = '';
+		if ($data['type'] == 'preview' || $data['type'] == 'exterior' || $data['type'] == 'interior') {
+			$dir = self::$directory . 'assets/cars/' . $data['dir'] . '/';
+		} else {
+			$dir = self::$directory . 'assets/' . $data['dir'] . '/';
+		}
 
 		if ($data['type'] == 'exterior') {
 			$dir = $dir . 'ext/';
@@ -372,6 +386,52 @@ class Car
 
 		echo json_encode($status);
 
+	}
+
+	function delDir($data) {
+
+		$status = new stdClass();
+		$status->data = false;
+		$status->token = false;
+
+		$check = checkToken($data['token']);
+
+		if ($check) {
+			$status->token = true;
+		} else {
+			return $status;
+		}
+
+		$dir = self::$directory . "assets/";
+		$dirPath = $dir;
+		// $dirPath = $dir . $data['dir'];
+
+		if (!$data['dir'] || !$data['type'] || strpos($data['dir'], '.') !== false) {
+			return $status;
+		}
+
+		if ($data['type'] == 'cars') {
+			$dirPath = $dirPath . 'cars/' . $data['dir'];
+		}
+		if ($data['type'] == 'promo') {
+			$dirPath = $dirPath . 'promo/' . $data['dir'];
+		}
+		if ($data['type'] == 'car-brands') {
+			$dirPath = $dirPath . 'car-brands/' . $data['dir'];
+		}
+
+		$status->data = $this->Delete($dirPath);
+
+		return $status;
+	}
+
+	function Delete($path) {
+		$files = glob($path . '/*');
+		foreach ($files as $file) {
+			is_dir($file) ? $this->Delete($file) : unlink($file);
+		}
+		rmdir($path);
+	 	return;
 	}
 
 	function testUpload($data) {

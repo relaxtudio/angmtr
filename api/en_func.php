@@ -130,7 +130,7 @@ function addCarDetail() {
 function delCar() {
 	$data = getData();
 	$car = new Car;
-	$car->delCar($data);
+	echo json_encode($car->delCar($data));
 }
 
 function editCar() {
@@ -155,6 +155,12 @@ function uploadCar() {
 	$data = getData();
 	$car = new Car;
 	$car->uploadCar($data);
+}
+
+function delDir() {
+	$data = getData();
+	$car = new Car;
+	echo json_encode($car->delDir($data));
 }
 
 function testUpload() {
