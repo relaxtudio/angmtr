@@ -260,6 +260,37 @@ class Car
 
 	}
 
+	function soldCar($data) {
+
+		$model = new Model;
+		$model->connect();
+
+		$status = new stdClass();
+		$status->data = false;
+		$status->token = false;
+
+		$check = checkToken($data['token']);
+
+		if ($check) {
+			$status->token = true;
+		} else {
+			return $status;
+		}
+
+		$sql = "UPDATE " . self::$table3 . " SET cars_stats_id = 2 
+				WHERE cars_prod_id = " . $data['id'];
+
+		if (isset($data['id'])) {
+			mysqli_query($model->conn, $sql);
+			$status->data = true;
+		}
+
+		$model->close();
+
+		return $status;
+
+	}
+
 	function editCar($data) {
 
 		$status = new stdClass();
@@ -273,7 +304,7 @@ class Car
 		$sql = "";
 
 		if (isset($data->id)) {
-			$sql = "UPDATE " . self::$table1 . " SET";
+			$sql = "UPDATE " . self::$table1 . " SET ";
 		}
 
 		if ($check) {

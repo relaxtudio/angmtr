@@ -12,6 +12,7 @@ require_once('func/map.php');
 require_once('func/car.php');
 require_once('func/promo.php');
 require_once('func/sim.php');
+require_once('func/upload.php');
 
 function test() {
 	echo getData();
@@ -133,6 +134,12 @@ function delCar() {
 	echo json_encode($car->delCar($data));
 }
 
+function soldCar() {
+	$data = getData();
+	$car = new Car;
+	echo json_encode($car->soldCar($data));
+}
+
 function editCar() {
 	$data = getData();
 	$car = new Car;
@@ -145,22 +152,24 @@ function editCarDetail() {
 	$car->editCarDetail($data);
 }
 
+// Upload
+
 function dirCar() {
 	$data = getData();
-	$car = new Car;
-	$car->dirCar($data);
+	$upload = new Upload;
+	$upload->dirCar($data);
 }
 
 function uploadCar() {
 	$data = getData();
-	$car = new Car;
-	$car->uploadCar($data);
+	$upload = new Upload;
+	echo json_encode($upload->uploadCar($data));
 }
 
 function delDir() {
 	$data = getData();
-	$car = new Car;
-	echo json_encode($car->delDir($data));
+	$upload = new Upload;
+	echo json_encode($upload->delDir($data));
 }
 
 function testUpload() {
@@ -175,6 +184,24 @@ function getPromo() {
 	$data = getData();
 	$promo = new Promo;
 	echo json_encode($promo->getPromo($data));
+}
+
+function addPromo() {
+	$data = getData();
+	$promo = new Promo;
+	echo json_encode($promo->addPromo($data));
+}
+
+function delPromo() {
+	$data = getData();
+	$promo = new Promo;
+	echo json_encode($promo->delPromo($data));
+}
+
+function promoToggle() {
+	$data = getData();
+	$promo = new Promo;
+	echo json_encode($promo->promoToggle($data));
 }
 
 // Sim
