@@ -63,7 +63,7 @@ function getMap() {
 function addMap() {
 	$data = getData();
 	$map = new Map;
-	$map->addMap($data);
+	echo json_encode($map->addMap($data));
 }
 
 function delMap() {
