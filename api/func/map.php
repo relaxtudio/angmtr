@@ -74,7 +74,7 @@ class Map
 
 		if (isset($data['data'])) {
 			$map = $data['data'];
-			$sql = "DELETE FROM " . self::$table " WHERE sr_id = " . $map['id'];
+			$sql = "DELETE FROM " . self::$table . " WHERE sr_id = " . $map['id'];
 			$q = mysqli_query($model->conn, $sql);
 			if ($q) {
 				$status->data = true;
