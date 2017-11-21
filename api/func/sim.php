@@ -7,6 +7,7 @@
 		public static $table1 = "premi_as";
 		public static $table2 = "bunga_bcaf";
 		public static $table3 = "biaya_bcaf";
+		public static $table4 = "fixcap_bcaf";
 
 		function calcSim($data) {
 
@@ -16,8 +17,12 @@
 			$return['bunga'] = new stdClass();
 			$return['prepayment'] = new stdClass();
 
+			$pro = $this->getProvisi($data);
+
+			$provisi = intval($pro) / 100;
+
 			$dp = ($data['c_harga'] * $data['c_dp']) / 100;
-			$sisa = $data['c_harga'] - $dp;
+			$sisa = ($data['c_harga'] - $dp) * (1 + $provisi);
 			$masaangsr = ($data['bunga_thn'] * 12) - 1;
 
 			$return['mobil']->harga = $data['c_harga'];
@@ -32,12 +37,26 @@
 
 			$sisaas = $sisa + $return['asuransi']->total;
 
-			$percBu = $this->calcBunga($data);
-			$return['bunga']->tenor = $data['bunga_thn'];
-			$return['bunga']->bunga = $percBu[0];
-			$return['bunga']->total = ($sisaas * $percBu[0] * $data['bunga_thn']) / 100;
-			$return['bunga']->masaangsr = $masaangsr;
-			$return['bunga']->angsuran = ($sisaas + $return['bunga']->total) / $masaangsr;
+			if (intval($data['bunga_thn']) > 4) {
+				$fix = $this->fixCap($data)[0];
+				$return['bunga']->term1 = (($sisaas + ($sisaas * $fix['term1']) / 100)) / ($data['bunga_thn'] * 12);
+				$return['bunga']->term2 = (($sisaas + ($sisaas * $fix['term2']) / 100)) / ($data['bunga_thn'] * 12);
+				$return['bunga']->angsuran = $return['bunga']->term1;
+			} else {
+				$percBu = $this->calcBunga($data);
+				$return['bunga']->tenor = $data['bunga_thn'];
+				$return['bunga']->bunga = $percBu[0];
+				$return['bunga']->total = ($sisaas * $percBu[0]) / 100; // * $data['bunga_thn']
+				$return['bunga']->masaangsr = $masaangsr;
+				$return['bunga']->angsuran = ($sisaas + $return['bunga']->total) / ($data['bunga_thn'] * 12);
+			}
+
+			// $percBu = $this->calcBunga($data);
+			// $return['bunga']->tenor = $data['bunga_thn'];
+			// $return['bunga']->bunga = $percBu[0];
+			// $return['bunga']->total = ($sisaas * $percBu[0] * $data['bunga_thn']) / 100;
+			// $return['bunga']->masaangsr = $masaangsr;
+			// $return['bunga']->angsuran = ($sisaas + $return['bunga']->total) / $masaangsr;
 
 			$preArray = $this->calcPrepayment($data);
 			$return['prepayment']->dp = $dp;
@@ -47,6 +66,22 @@
 			$return['prepayment']->crdtpro = ($sisaas * $preArray[3]) / 100;
 
 			return $return;
+		}
+
+		function getProvisi($data) {
+			$model = new Model;
+			$model->connect();
+
+			$sql = "SELECT provisi_on_loan FROM " . self::$table3 . "
+					WHERE " . $data['c_harga'] . " BETWEEN hutang_min AND hutang_max 
+					AND tenor_thn = " . $data['bunga_thn'];
+
+			$q = mysqli_query($model->conn, $sql);
+			$result = $q->fetch_row();
+
+			$model->close();
+
+			return $result;
 		}
 
 		function calcAsuransi($data) {
@@ -95,6 +130,42 @@
 			$model->close();
 
 			return $result;
+		}
+
+		function fixCap($data) {
+			$model = new Model;
+			$model->connect();
+
+			$sql = "SELECT term1, term2 FROM " . self::$table4 . "
+					WHERE " . $data['thnmobil'] . " BETWEEN thn_mobil_min AND thn_mobil_max 
+					AND tenor_thn = " . $data['bunga_thn'];
+
+			$q = mysqli_query($model->conn, $sql);
+			$result = mysqli_fetch_all($q, MYSQLI_ASSOC);
+
+			$model->close();
+
+			return $result;
+		}
+
+		function getValue($data) {
+
+			$model = new Model;
+			$model->connect();
+
+			$status = new stdClass();
+			$status->data = false;
+			$status->token = false;
+
+			$check = checkToken($data['token']);
+
+			if ($check) {
+				$status->token = true;
+			} else {
+				return $status;
+			}
+
+			$model->close();
 		}
 	}	
 ?>
