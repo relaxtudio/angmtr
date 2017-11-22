@@ -27,6 +27,18 @@ class Car
 		$model->close();
 	}
 
+	function getTrans($data) {
+		$model = new Model;
+		$model->connect();
+
+		$sql = "SELECT trans_id as id, trans_nm as name FROM " . self::$table5;
+		$q = mysqli_query($model->conn, $sql);
+		$result = mysqli_fetch_all($q, MYSQLI_ASSOC);
+		echo json_encode($result);
+
+		$model->close();
+	}
+
 	function getModel($data) {
 		$model = new Model;
 		$model->connect();

@@ -86,6 +86,12 @@ function getBrand() {
 	$car->getBrand($data);
 }
 
+function getTrans() {
+	$data = getData();
+	$car = new Car;
+	$car->getTrans($data);
+}
+
 function getModel() {
 	$data = getData();
 	$car = new Car;
