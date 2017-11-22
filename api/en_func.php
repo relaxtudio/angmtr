@@ -211,3 +211,9 @@ function calcSim() {
 	$sim = new Sim;
 	echo json_encode($sim->calcSim($data));
 }
+
+function getValue() {
+	$data = getData();
+	$sim = new Sim;
+	echo json_encode($sim->getValue($data));
+}

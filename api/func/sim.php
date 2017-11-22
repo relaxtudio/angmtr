@@ -165,7 +165,80 @@
 				return $status;
 			}
 
+			$sql = '';
+
+			if (isset($data['data'])) {
+				$pointer = $data['data']['table'];
+				if ($pointer == 'bunga') {
+					$table = self::$table2;
+					$sql = "SELECT 	id_bbcaf as id, 
+									thn_mobil_min as thnmin, 
+									thn_mobil_max as thnmax, 
+									min_dp as dp, 
+									thn1, 
+									thn2, 
+									thn3, 
+									thn4
+							FROM " . $table;
+				} elseif ($pointer == 'fixcap') {
+					$table = self::$table4;
+					$sql = "SELECT 	id_fc as id, 
+									thn_mobil_min as thnmin, 
+									thn_mobil_max as thnmax,
+									tenor_thn as tenor,
+									min_dp as dp, 
+									term1,
+									term2
+							FROM " . $table;
+				} elseif ($pointer == 'biaya') {
+					$table = self::$table3;
+					$sql = "SELECT 	id_bibcaf as id,
+									tenor_thn as tenor, 
+									biaya_adm_polis as admpolis,
+									biaya_adm as adm,
+									hutang_min as hutangmin,
+									hutang_max as hutangmax,
+									fiducia,
+									credit_protection as crdtpro,
+									provisi_masuk_tdp,
+									provisi_on_loan as provisi
+							FROM " . $table;
+				} elseif ($pointer == 'premi') {
+					$table = self::$table1;
+					$sql = "SELECT 	id_as as id,
+									jenis_as as jenis,
+									min_thn_mobil_fk as thnmin,
+									max_thn_mobil_fk as thnmax,
+									min_otr as minotr,
+									max_otr as maxotr,
+									thn1, 
+									thn2, 
+									thn3, 
+									thn4,
+									thn5,
+									thn6
+							FROM " . $table;
+				}
+			} else {
+				$table = self::$table2;
+				$sql = "SELECT 	id_bbcaf as id, 
+								thn_mobil_min as thnmin, 
+								thn_mobil_max as thnmax, 
+								min_dp as dp, 
+								thn1, 
+								thn2, 
+								thn3, 
+								thn4
+						FROM " . $table;
+			}
+
+			
+			$q = mysqli_query($model->conn, $sql);
+			$result = mysqli_fetch_all($q, MYSQLI_ASSOC);
+
 			$model->close();
+
+			return $result;
 		}
 	}	
 ?>
