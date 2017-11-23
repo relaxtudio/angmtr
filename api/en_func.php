@@ -223,3 +223,9 @@ function getValue() {
 	$sim = new Sim;
 	echo json_encode($sim->getValue($data));
 }
+
+function updateSim() {
+	$data = getData();
+	$sim = new Sim;
+	echo json_encode($sim->updateSim($data));
+}
