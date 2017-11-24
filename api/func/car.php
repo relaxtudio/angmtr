@@ -74,13 +74,19 @@ class Car
 				$filter = $filter . " WHERE c_id = " . $data['filter']['id'];
 			}
 			if (isset($data['filter']['brand'])) {
-				$filter = $filter . " WHERE cars_brand.brand_id = " . $data['filter']['brand'];
+				$filter = $filter . " WHERE cars_brand.brand_nm like '%" . $data['filter']['brand'] . "%'";
 			}
 			if (isset($data['filter']['page']) && isset($data['filter']['limit'])) {
 				$limit = " LIMIT " . $data['filter']['limit'];
 				$offset = " OFFSET " . $data['filter']['limit'] * ($data['filter']['page'] - 1);
 			}
-			
+			if (isset($data['filter']['search'])) {
+				$filter = $filter . " WHERE cars_brand.brand_nm like '%" . $data['filter']['search'] . "%' OR
+									cars_prod.name like '%" . $data['filter']['search'] . "%' OR
+									cars_stats.status like '%" . $data['filter']['search'] . "%' OR
+									cars_model.value like '%" . $data['filter']['search'] . "%' OR
+									cars_detail.warna like '%" . $data['filter']['search'] . "%'";
+			}
 		}
 		$sql = "SELECT cars_prod.c_id as id,  
 						cars_prod.name as name,
@@ -97,7 +103,8 @@ class Car
 						usr_lgn.usr_nm as addby,
 						cars_detail.km as km,
 						showroom.sr_nm as showroom,
-						cars_detail.dir_img
+						cars_detail.dir_img,
+						cars_detail.updated
 				FROM " . self::$table1 . " 
 				JOIN " . self::$table3 . " ON " . self::$table3 . ".cars_prod_id = " . self::$table1 . ".c_id 
 				JOIN " . self::$table2 . " ON " . self::$table2 . ".brand_id = " . self::$table1 . ".brand_id_fk 
@@ -142,16 +149,41 @@ class Car
 		$model->connect();
 
 		$filter = "";
-		if (isset($data->filter)) {
-			$filter += "";
+		
+		if (isset($data['filter']['search'])) {
+			$filter = $filter . " WHERE cars_brand.brand_nm like '%" . $data['filter']['search'] . "%' OR
+									cars_prod.name like '%" . $data['filter']['search'] . "%' OR
+									cars_stats.status like '%" . $data['filter']['search'] . "%' OR
+									cars_model.value like '%" . $data['filter']['search'] . "%' OR
+									cars_detail.warna like '%" . $data['filter']['search'] . "%'";
 		}
 
-		$sql = "SELECT s.sr_nm as showroom,
-				count(cp.c_id) as total
+		$sql = "SELECT showroom.sr_nm as showroom,
+						count(cars_prod.c_id) as total
+				FROM " . self::$table1 . " 
+				JOIN " . self::$table3 . " ON " . self::$table3 . ".cars_prod_id = " . self::$table1 . ".c_id 
+				JOIN " . self::$table2 . " ON " . self::$table2 . ".brand_id = " . self::$table1 . ".brand_id_fk 
+				JOIN " . self::$table4 . " ON " . self::$table4 . ".stats_id = " . self::$table3 . ".cars_stats_id 
+				JOIN " . self::$table5 . " ON " . self::$table5 . ".trans_id = " . self::$table3 . ".trans_id 
+				JOIN " . self::$table7 . " ON " . self::$table7 . ".cars_model_id = " . self::$table1 . ".cars_model_id 
+				JOIN " . self::$table6 . " ON " . self::$table6 . ".sr_id = " . self::$table3 . ".showroom_id 
+				JOIN " . self::$sptable . " ON " . self::$sptable . ".usr_id = " . self::$table3 . ".add_by 
+				" . $filter . " GROUP BY showroom.sr_nm ";
+		$q = mysqli_query($model->conn, $sql);
+		$result = mysqli_fetch_all($q, MYSQLI_ASSOC);
+		echo json_encode($result);
+
+		$model->close();
+	}
+
+	function getCarSold($data) {
+		$model = new Model;
+		$model->connect();
+
+		$sql = "SELECT count(cp.c_id) as total 
 				FROM " . self::$table1 . " cp
-				LEFT JOIN " . self::$table3 . " cd ON cd.cars_prod_id = cp.c_id
-				LEFT JOIN " . self::$table6 . " s ON s.sr_id = cd.showroom_id
-				GROUP BY s.sr_nm";
+				JOIN " . self::$table3 . " cd ON cd.cars_prod_id = cp.c_id
+				WHERE cd.cars_stats_id = 2";
 		$q = mysqli_query($model->conn, $sql);
 		$result = mysqli_fetch_all($q, MYSQLI_ASSOC);
 		echo json_encode($result);
@@ -212,7 +244,7 @@ class Car
 
 		$sql = "INSERT INTO " . self::$table3 . " (cars_prod_id, harga, tahun, nopol,
 													bbm, km, trans_id, silinder, warna,
-													showroom_id, cars_stats_id, dir_img, add_by) VALUES (
+													showroom_id, cars_stats_id, dir_img, add_by, updated) VALUES (
 				" . intval($data['data']['id']) . ",
 				" . intval($data['data']['harga']) . ",
 				" . intval($data['data']['tahun']) . ",
@@ -225,7 +257,7 @@ class Car
 				" . intval($data['data']['showroom_id']) . ",
 				" . intval($data['data']['cars_stats_id']) . ",
 				'" . $data['data']['dir_img'] . "',
-				" . intval($data['data']['add_by']) . " )";
+				" . intval($data['data']['add_by']) . ", now() )";
 
 		$q = mysqli_query($model->conn, $sql);
 
@@ -289,7 +321,7 @@ class Car
 			return $status;
 		}
 
-		$sql = "UPDATE " . self::$table3 . " SET cars_stats_id = 2 
+		$sql = "UPDATE " . self::$table3 . " SET cars_stats_id = 2, updated = now()
 				WHERE cars_prod_id = " . $data['id'];
 
 		if (isset($data['id'])) {
@@ -353,6 +385,67 @@ class Car
 				$status->data = true;
 			}
 		}
+
+		$model->close();
+	}
+
+	function addBrand($data) {
+		$status = new stdClass();
+		$status->data = false;
+		$status->token = false;
+
+		$check = checkToken($data['token']);
+
+		$model = new Model;
+		$model->connect();
+
+		$sql = "INSERT INTO " . self::$table2 . " (brand_nm) 
+				VALUES ('" . $data['data'] . "')";
+		$q = mysqli_query($model->conn, $sql);
+		if ($q) {
+			$status->data = true;
+		}
+
+		$model->close();
+
+		return $status;
+	}
+
+	function delBrand($data) {
+		$status = new stdClass();
+		$status->data = false;
+		$status->token = false;
+
+		$check = checkToken($data['token']);
+
+		$model = new Model;
+		$model->connect();
+
+		$model->close();
+	}
+
+	function addModel($data) {
+		$status = new stdClass();
+		$status->data = false;
+		$status->token = false;
+
+		$check = checkToken($data['token']);
+
+		$model = new Model;
+		$model->connect();
+
+		$model->close();
+	}
+
+	function delModel($data) {
+		$status = new stdClass();
+		$status->data = false;
+		$status->token = false;
+
+		$check = checkToken($data['token']);
+
+		$model = new Model;
+		$model->connect();
 
 		$model->close();
 	}

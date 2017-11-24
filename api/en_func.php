@@ -122,6 +122,12 @@ function getCarSum() {
 	$car->getCarSum($data);
 }
 
+function getCarSold() {
+	$data = getData();
+	$car = new Car;
+	$car->getCarSold($data);
+}
+
 function addCar() {
 	$data = getData();
 	$car = new Car;
@@ -156,6 +162,30 @@ function editCarDetail() {
 	$data = getData();
 	$car = new Car;
 	$car->editCarDetail($data);
+}
+
+function addBrand() {
+	$data = getData();
+	$car = new Car;
+	echo json_encode($car->addBrand($data));
+}
+
+function delBrand() {
+	$data = getData();
+	$car = new Car;
+	echo json_encode($car->delBrand($data));
+}
+
+function addModel() {
+	$data = getData();
+	$car = new Car;
+	echo json_encode($car->addModel($data));
+}
+
+function delModel() {
+	$data = getData();
+	$car = new Car;
+	echo json_encode($car->delModel($data));
 }
 
 // Upload
@@ -208,6 +238,12 @@ function promoToggle() {
 	$data = getData();
 	$promo = new Promo;
 	echo json_encode($promo->promoToggle($data));
+}
+
+function getSocmed() {
+	$data = getData();
+	$promo = new Promo;
+	echo json_encode($promo->getSocmed($data));
 }
 
 // Sim

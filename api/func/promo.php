@@ -6,6 +6,7 @@
 class Promo {
 
 	public static $table1 = "promo";
+	public static $table2 = "socmed";
 	
 	function getPromo($data) {
 		$model = new Model;
@@ -137,6 +138,20 @@ class Promo {
 		$model->close();
 
 		return $status;
+	}
+
+	function getSocmed($data) {
+
+		$model = new Model;
+		$model->connect();
+
+		$sql = "SELECT * FROM " . self::$table2;
+		$q = mysqli_query($model->conn, $sql);
+		$result = mysqli_fetch_all($q, MYSQLI_ASSOC);
+
+		$model->close();
+
+		return $result;
 	}
 }
 
