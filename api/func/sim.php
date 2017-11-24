@@ -295,6 +295,48 @@ class Sim
 						$status->data = mysqli_errno($q);
 					}
 				}
+			} elseif ($value['pointer'] == 'premi') {
+				foreach ($value['data'] as $key => $roll) {
+					$sql = "UPDATE  " . self::$table1 . " SET 
+							jenis_as = '" . $roll['jenis'] . "',
+							min_thn_mobil_fk = " . $roll['thnmin'] . ",
+							max_thn_mobil_fk = " . $roll['thnmax'] . ",
+							min_otr = " . $roll['minotr'] . ",
+							max_otr = " . $roll['maxotr'] . ",
+							thn1 = " . $roll['thn1'] . ", 
+							thn2 = " . $roll['thn2'] . ", 
+							thn3 = " . $roll['thn3'] . ", 
+							thn4 = " . $roll['thn4'] . ",
+							thn5 = " . $roll['thn5'] . ",
+							thn6 = " . $roll['thn6'] . "
+							WHERE id_as = " . intval($roll['id']);
+					$q = mysqli_query($model->conn, $sql);
+					if ($q) {
+						$status->data = true;
+					} else {
+						$status->data = mysqli_errno($q);
+					}
+				}
+			} elseif ($value['pointer'] == 'biaya') {
+				foreach ($value['data'] as $key => $roll) {
+					$sql = "UPDATE " . self::$table3 . " SET
+							tenor_thn = " . $roll['tenor'] . ", 
+							biaya_adm_polis = " . $roll['admpolis'] . ",
+							biaya_adm = " . $roll['adm'] . ",
+							hutang_min = " . $roll['hutangmin'] . ",
+							hutang_max = " . $roll['hutangmax'] . ",
+							fiducia = " . $roll['fiducia'] . ",
+							credit_protection = " . $roll['crdtpro'] . ",
+							provisi_masuk_tdp = " . $roll['provisi_masuk_tdp'] . ",
+							provisi_on_loan = " . $roll['provisi'] . "
+							WHERE id_bibcaf = " . $roll['id'];
+					$q = mysqli_query($model->conn, $sql);
+					if ($q) {
+						$status->data = true;
+					} else {
+						$status->data = mysqli_errno($q);
+					}
+				}
 			}
 		}
 
