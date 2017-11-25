@@ -100,6 +100,7 @@ class Car
 						cars_model.value as model,
 						cars_detail.warna as warna,
 						cars_detail.tahun as tahun,
+						cars_detail.nopol,
 						usr_lgn.usr_nm as addby,
 						cars_detail.km as km,
 						showroom.sr_nm as showroom,
