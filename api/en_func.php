@@ -161,7 +161,7 @@ function editCar() {
 function editCarDetail() {
 	$data = getData();
 	$car = new Car;
-	$car->editCarDetail($data);
+	json_encode($car->editCarDetail($data));
 }
 
 function addBrand() {
@@ -206,6 +206,12 @@ function delDir() {
 	$data = getData();
 	$upload = new Upload;
 	echo json_encode($upload->delDir($data));
+}
+
+function delFiles() {
+	$data = getData();
+	$upload = new Upload;
+	echo json_encode($upload->delFiles($data));
 }
 
 function testUpload() {

@@ -70,15 +70,17 @@ class Upload
 						$name = 'preview.jpg';
 					}
 
+					if ($data['type'] == 'interior') {
+						$name = 'interior.jpg';
+					}
+
 					$extension = str_replace("image/", "", $mime_type);
 					file_put_contents($dir . $name, $fileImage);
 				}
 				$status->data = true;
 			}
 		}
-
 		return $status;
-
 	}
 
 	function delDir($data) {
@@ -118,6 +120,29 @@ class Upload
 		return $status;
 	}
 
+	function delFiles($data) {
+		$status = new stdClass();
+		$status->data = false;
+		$status->token = false;
+
+		$check = checkToken($data['token']);
+
+		if ($check) {
+			$status->token = true;
+		} else {
+			return $status;
+		}
+
+		$dir = self::$directory . "assets/";
+
+		$dirPath = $dir . $data['dir'];
+
+		$status->data = $this->DeleteFiles($dirPath);
+
+		return $status;
+
+	}
+
 	function Delete($path) {
 		$files = glob($path . '/*');
 		foreach ($files as $file) {
@@ -125,6 +150,14 @@ class Upload
 		}
 		rmdir($path);
 	 	return;
+	}
+
+	function DeleteFiles($path) {
+		$files = glob($path . '/*');
+		foreach ($files as $file) {
+			unlink($file);
+		}
+		return;
 	}
 }
 

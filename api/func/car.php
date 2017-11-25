@@ -371,23 +371,26 @@ class Car
 
 		$check = checkToken($data['token']);
 
-		$model = new Model;
-		$model->connect();
-		$sql = "";
-
-		if (isset($data->id)) {
-			$sql = "UPDATE " . self::$table1 . " SET";
-		}
-
 		if ($check) {
 			$status->token = true;
-			if (isset($data->id)) {
-				mysqli_query($model->conn, $sql);
-				$status->data = true;
-			}
+		} else {
+			return $status;
+		}
+
+		$model = new Model;
+		$model->connect();
+
+		$sql = "UPDATE " . self::$table3 . " SET
+				harga = " . intval($data['data']['harga']) . " 
+				WHERE cars_prod_id = " . intval($data['data']['id']);
+		$q = mysqli_query($model->conn, $sql);
+		if ($q) {
+			$status->data = true;
 		}
 
 		$model->close();
+
+		return $status;
 	}
 
 	function addBrand($data) {
@@ -396,6 +399,12 @@ class Car
 		$status->token = false;
 
 		$check = checkToken($data['token']);
+
+		if ($check) {
+			$status->token = true;
+		} else {
+			return $status;
+		}
 
 		$model = new Model;
 		$model->connect();
@@ -419,6 +428,12 @@ class Car
 
 		$check = checkToken($data['token']);
 
+		if ($check) {
+			$status->token = true;
+		} else {
+			return $status;
+		}
+
 		$model = new Model;
 		$model->connect();
 
@@ -441,6 +456,12 @@ class Car
 
 		$check = checkToken($data['token']);
 
+		if ($check) {
+			$status->token = true;
+		} else {
+			return $status;
+		}
+
 		$model = new Model;
 		$model->connect();
 
@@ -462,6 +483,12 @@ class Car
 		$status->token = false;
 
 		$check = checkToken($data['token']);
+
+		if ($check) {
+			$status->token = true;
+		} else {
+			return $status;
+		}
 
 		$model = new Model;
 		$model->connect();
