@@ -421,7 +421,16 @@ class Car
 		$model = new Model;
 		$model->connect();
 
+		$sql = "DELETE FROM " . self::$table2 . " WHERE 
+				brand_id = " . $data['data'];
+		$q = mysqli_query($model->conn, $sql);
+		if ($q) {
+			$status->data = true;
+		}
+
 		$model->close();
+
+		return $status;
 	}
 
 	function addModel($data) {
@@ -434,7 +443,16 @@ class Car
 		$model = new Model;
 		$model->connect();
 
+		$sql = "INSERT INTO " . self::$table7 . " (value) 
+				VALUES ('" . $data['data'] . "')";
+		$q = mysqli_query($model->conn, $sql);
+		if ($q) {
+			$status->data = true;
+		}
+
 		$model->close();
+
+		return $status;
 	}
 
 	function delModel($data) {
@@ -447,7 +465,16 @@ class Car
 		$model = new Model;
 		$model->connect();
 
+		$sql = "DELETE FROM " . self::$table7 . " WHERE 
+				cars_model_id = " . $data['data'];
+		$q = mysqli_query($model->conn, $sql);
+		if ($q) {
+			$status->data = true;
+		}
+
 		$model->close();
+
+		return $status;
 	}
 
 	function dirCar($data) {
