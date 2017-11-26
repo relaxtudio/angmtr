@@ -55,7 +55,11 @@ class Car
 		$model = new Model;
 		$model->connect();
 
-		$sql = "SELECT sr_id as id, sr_nm as name FROM " . self::$table6;
+		if ($data['filter']) {
+			$filter = " WHERE sr_id = " . intval($data['filter']['showroom']);
+		}
+
+		$sql = "SELECT sr_id as id, sr_nm as name FROM " . self::$table6 . $filter;
 		$q = mysqli_query($model->conn, $sql);
 		$result = mysqli_fetch_all($q, MYSQLI_ASSOC);
 		echo json_encode($result);
@@ -89,6 +93,9 @@ class Car
 			}
 			if (isset($data['filter']['showroom'])) {
 				$filter = $filter . " AND cars_detail.showroom_id = " . intval($data['filter']['showroom']);
+			}
+			if (isset($data['filter']['delSold'])) {
+				$filter = $filter . " AND case when cars_stats.stats_id = 2 then cars_detail.updated >= (CURDATE() - INTERVAL " . intval($data['filter']['delSold']) . " DAY) else true end";
 			}
 		}
 
