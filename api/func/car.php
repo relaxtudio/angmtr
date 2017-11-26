@@ -81,13 +81,17 @@ class Car
 				$offset = " OFFSET " . $data['filter']['limit'] * ($data['filter']['page'] - 1);
 			}
 			if (isset($data['filter']['search'])) {
-				$filter = $filter . " WHERE cars_brand.brand_nm like '%" . $data['filter']['search'] . "%' OR
+				$filter = $filter . " WHERE (cars_brand.brand_nm like '%" . $data['filter']['search'] . "%' OR
 									cars_prod.name like '%" . $data['filter']['search'] . "%' OR
 									cars_stats.status like '%" . $data['filter']['search'] . "%' OR
 									cars_model.value like '%" . $data['filter']['search'] . "%' OR
-									cars_detail.warna like '%" . $data['filter']['search'] . "%'";
+									cars_detail.warna like '%" . $data['filter']['search'] . "%')";
+			}
+			if (isset($data['filter']['showroom'])) {
+				$filter = $filter . " AND cars_detail.showroom_id = " . intval($data['filter']['showroom']);
 			}
 		}
+
 		$sql = "SELECT cars_prod.c_id as id,  
 						cars_prod.name as name,
 						cars_detail.harga,
@@ -118,6 +122,7 @@ class Car
 				ORDER BY cars_prod.c_id " . $limit . $offset;
 		$q = mysqli_query($model->conn, $sql);
 		$result = mysqli_fetch_all($q, MYSQLI_ASSOC);
+		
 		echo json_encode($result);
 		$model->close();
 	}
@@ -152,11 +157,15 @@ class Car
 		$filter = "";
 		
 		if (isset($data['filter']['search'])) {
-			$filter = $filter . " WHERE cars_brand.brand_nm like '%" . $data['filter']['search'] . "%' OR
+			$filter = $filter . " WHERE (cars_brand.brand_nm like '%" . $data['filter']['search'] . "%' OR
 									cars_prod.name like '%" . $data['filter']['search'] . "%' OR
 									cars_stats.status like '%" . $data['filter']['search'] . "%' OR
 									cars_model.value like '%" . $data['filter']['search'] . "%' OR
-									cars_detail.warna like '%" . $data['filter']['search'] . "%'";
+									cars_detail.warna like '%" . $data['filter']['search'] . "%')";
+		}
+
+		if (isset($data['filter']['showroom'])) {
+			$filter = $filter . " AND cars_detail.showroom_id = " . intval($data['filter']['showroom']);
 		}
 
 		$sql = "SELECT showroom.sr_nm as showroom,
