@@ -193,7 +193,7 @@ function delModel() {
 function dirCar() {
 	$data = getData();
 	$upload = new Upload;
-	$upload->dirCar($data);
+	echo json_encode($upload->dirCar($data));
 }
 
 function uploadCar() {

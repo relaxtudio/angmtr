@@ -17,15 +17,18 @@ class Upload
 
 		if ($check) {
 			$status->token = true;
-			if (file_exists(self::$directory . "assets/cars/" . $data['data']) == false) {
-				$status->data = true;
-				mkdir(self::$directory . "assets/cars/" . $data['data'], 0755);
-				mkdir(self::$directory . "assets/cars/" . $data['data'] . "/ext", 0755);
-				mkdir(self::$directory . "assets/cars/" . $data['data'] . "/int", 0755);
-			}
+		} else {
+			return $status;
 		}
 
-		echo json_encode($status);
+		if (!file_exists(self::$directory . "assets/cars/" . $data['data'])) {
+			mkdir(self::$directory . "assets/cars/" . $data['data'], 0755);
+			mkdir(self::$directory . "assets/cars/" . $data['data'] . "/ext", 0755);
+			mkdir(self::$directory . "assets/cars/" . $data['data'] . "/int", 0755);
+			$status->data = true;
+		}
+
+		return $status;
 	}
 
 	function uploadCar($data) {
@@ -33,6 +36,7 @@ class Upload
 		$status = new stdClass();
 		$status->data = false;
 		$status->token = false;
+		$status->file = array();
 
 		$check = checkToken($data['token']);
 		$type = $data['type'];
@@ -53,7 +57,6 @@ class Upload
 
 		if ($check) {
 			$status->token = true;
-			// pathinfo($data->dir . $data->$file,PATHINFO_EXTENSION);
 			if (isset($data['image'])) {
 				$mime_type = '';
 				foreach ($data['image'] as $key => $value) {
@@ -76,6 +79,7 @@ class Upload
 
 					$extension = str_replace("image/", "", $mime_type);
 					file_put_contents($dir . $name, $fileImage);
+					array_push($status->file, $name); 
 				}
 				$status->data = true;
 			}

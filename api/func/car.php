@@ -128,7 +128,7 @@ class Car
 				JOIN " . self::$table6 . " ON " . self::$table6 . ".sr_id = " . self::$table3 . ".showroom_id 
 				JOIN " . self::$sptable . " ON " . self::$sptable . ".usr_id = " . self::$table3 . ".add_by 
 				" . $filter . "
-				ORDER BY cars_prod.c_id " . $limit . $offset;
+				ORDER BY cars_prod.c_id DESC " . $limit . $offset;
 		$q = mysqli_query($model->conn, $sql);
 		$result = mysqli_fetch_all($q, MYSQLI_ASSOC);
 		
