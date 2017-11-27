@@ -55,7 +55,9 @@ class Car
 		$model = new Model;
 		$model->connect();
 
-		if ($data['filter']) {
+		$filter = "";
+
+		if (isset($data['filter']['showroom'])) {
 			$filter = " WHERE sr_id = " . intval($data['filter']['showroom']);
 		}
 
