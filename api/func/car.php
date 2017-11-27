@@ -19,7 +19,7 @@ class Car
 		$model = new Model;
 		$model->connect();
 
-		$sql = "SELECT brand_id as id, brand_nm as name FROM " . self::$table2;
+		$sql = "SELECT brand_id as id, brand_nm as name FROM " . self::$table2 . " ORDER BY brand_nm ASC";
 		$q = mysqli_query($model->conn, $sql);
 		$result = mysqli_fetch_all($q, MYSQLI_ASSOC);
 		echo json_encode($result);
@@ -128,7 +128,11 @@ class Car
 				JOIN " . self::$table6 . " ON " . self::$table6 . ".sr_id = " . self::$table3 . ".showroom_id 
 				JOIN " . self::$sptable . " ON " . self::$sptable . ".usr_id = " . self::$table3 . ".add_by 
 				" . $filter . "
+<<<<<<< HEAD
 				ORDER BY cars_prod.c_id DESC " . $limit . $offset;
+=======
+				ORDER BY cars_prod.c_id DESC" . $limit . $offset;
+>>>>>>> 7eda3318fec44fff1b5f6aa6434959faebb33379
 		$q = mysqli_query($model->conn, $sql);
 		$result = mysqli_fetch_all($q, MYSQLI_ASSOC);
 		
