@@ -91,6 +91,7 @@ class Car
 									cars_prod.name like '%" . $data['filter']['search'] . "%' OR
 									cars_stats.status like '%" . $data['filter']['search'] . "%' OR
 									cars_model.value like '%" . $data['filter']['search'] . "%' OR
+									cars_detail.nopol like '%" . $data['filter']['search'] . "%' OR
 									cars_detail.warna like '%" . $data['filter']['search'] . "%')";
 			}
 			if (isset($data['filter']['showroom'])) {
@@ -170,6 +171,7 @@ class Car
 									cars_prod.name like '%" . $data['filter']['search'] . "%' OR
 									cars_stats.status like '%" . $data['filter']['search'] . "%' OR
 									cars_model.value like '%" . $data['filter']['search'] . "%' OR
+									cars_detail.nopol like '%" . $data['filter']['search'] . "%' OR
 									cars_detail.warna like '%" . $data['filter']['search'] . "%')";
 		}
 
